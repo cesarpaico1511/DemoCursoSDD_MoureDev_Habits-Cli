@@ -7,11 +7,11 @@ Persistencia en JSON local (`habits/storage.py`).
 
 ## Comandos
 - Ejecutar: `python -m habits <comando>`
-- Tests: `pytest -q`
+- Tests: `python -m unittest discover -s tests -v`
 
 ## Estilo
 - Python 3.12+, type hints en todas las funciones públicas.
-- Solo biblioteca estándar (pytest únicamente para tests).
+- Solo biblioteca estándar, incluido `unittest` para tests; cero dependencias externas.
 - Identificadores en inglés; mensajes de usuario en español.
 
 ## Reglas
@@ -20,4 +20,4 @@ Persistencia en JSON local (`habits/storage.py`).
 - No modifiques archivos dentro de `specs/` salvo petición explícita.
 
 ## Al terminar cualquier tarea
-- Ejecuta `pytest -q` y confirma en tu respuesta que todo pasa.
+- Ejecuta `python -m unittest discover -s tests -v` y comunica en tu respuesta el resultado real.

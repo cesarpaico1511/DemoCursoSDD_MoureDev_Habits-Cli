@@ -32,6 +32,11 @@ Una persona que registra sus propios hábitos de estudio y conoce el uso básico
 - **Si** el nombre está vacío o contiene únicamente espacios, **el sistema deberá** rechazar la creación, explicar el motivo y conservar los datos existentes.
 - **Si** ya existe un hábito con un nombre equivalente, **el sistema deberá** rechazar la creación y comunicar que el hábito ya existe.
 - **Cuando** se busque un hábito para marcarlo, **el sistema deberá** aplicar las mismas reglas de comparación utilizadas al crearlo.
+- **El sistema deberá** admitir nombres Unicode legibles sin un límite fijo de longitud.
+- **Si** un nombre contiene tabulaciones, saltos de línea o caracteres de control, incluso en sus extremos, **el sistema deberá** rechazarlo sin modificar los datos.
+- **Cuando** se hayan eliminado los espacios de los extremos, **el sistema deberá** rechazar un nombre vacío o con caracteres no imprimibles.
+- **El sistema deberá** considerar equivalentes las representaciones Unicode canónicamente equivalentes y presentar los nombres con una representación canónica común.
+- **El sistema deberá** conservar las tildes y los espacios interiores: «café» y «cafe» identifican hábitos distintos, al igual que «Leer Python» y «Leer  Python».
 
 ### RF-3 — Marcar un hábito como hecho
 
@@ -39,12 +44,15 @@ Una persona que registra sus propios hábitos de estudio y conoce el uso básico
 - **Si** el hábito ya está hecho hoy, **el sistema deberá** informar de ello y terminar con éxito, sin añadir otro cumplimiento ni modificar la racha.
 - **Si** el hábito indicado no existe, **el sistema deberá** comunicar el error sin crearlo ni modificar otros hábitos.
 - **El sistema deberá** admitir como máximo un cumplimiento por hábito y fecha.
+- **Cuando** un marcado termine con éxito, incluido un marcado repetido, **el sistema deberá** mostrar el nombre del hábito, su racha actual y el estado «Hecho hoy».
+- **Cuando** se marque un hábito, **el sistema deberá** conservar los cumplimientos y el orden de creación de los demás hábitos.
 
 ### RF-4 — Determinar el día de cumplimiento
 
-- **Cuando** se ejecute una operación, **el sistema deberá** tomar como «hoy» la fecha local del equipo al inicio de esa operación.
+- **Cuando** comience una operación, antes de acceder a los datos, **el sistema deberá** obtener una sola fecha local de referencia y utilizarla como «hoy» durante toda esa operación.
 - **El sistema deberá** considerar días de calendario consecutivos, incluidos fines de semana y festivos.
-- **Cuando** cambie la fecha a medianoche local, **el sistema deberá** considerar iniciado un nuevo día, aunque no hayan transcurrido 24 horas desde el último cumplimiento.
+- **Si** una operación atraviesa medianoche, **el sistema deberá** conservar su fecha de referencia inicial; la siguiente operación utilizará la nueva fecha local.
+- **El sistema deberá** contar días de calendario aunque un cambio estacional de hora produzca días de 23 o 25 horas.
 - **Si** el usuario intenta registrar una fecha diferente de hoy, **el sistema deberá** rechazar la solicitud sin modificar los datos.
 
 ### RF-5 — Calcular la racha actual
@@ -67,11 +75,23 @@ Una persona que registra sus propios hábitos de estudio y conoce el uso básico
 - **Si** todavía no existen datos guardados, **el sistema deberá** permitir comenzar con una colección vacía.
 - **Si** los datos existentes están dañados o no pueden leerse, **el sistema deberá** informar del problema y detener la operación sin sustituirlos ni tratarlos como una colección vacía.
 - **Si** no puede guardarse una modificación, **el sistema deberá** informar del fallo, conservar los datos previamente guardados y evitar confirmar un éxito.
+- **El sistema deberá** mantener la misma colección personal aunque cambie la carpeta desde la que se ejecuta una operación.
+- **Si** existe un almacenamiento vacío sin una colección válida, **el sistema deberá** considerarlo dañado; únicamente la ausencia de almacenamiento o una colección vacía válida permiten empezar sin hábitos.
+- **Si** los datos contienen nombres inválidos o equivalentes entre sí, fechas imposibles o futuras, cumplimientos repetidos o desordenados, información obligatoria ausente, datos de tipo incorrecto, elementos no admitidos o una versión no compatible, **el sistema deberá** rechazarlos íntegramente, sin corregirlos ni sobrescribirlos.
+- **Cuando** el usuario liste sin datos previos o repita un marcado ya realizado hoy, **el sistema deberá** evitar crear o volver a guardar datos.
+- **Si** la operación se interrumpe antes de que la nueva colección sustituya a la anterior, **el sistema deberá** conservar la colección anterior o su ausencia inicial.
+- **Si** la operación se interrumpe después de esa sustitución y antes de confirmar el éxito, **el sistema deberá** conservar la nueva colección completa, sin revertirla ni recuperarla automáticamente.
 
 ### RF-8 — Comunicar errores de uso
 
 - **Si** falta información obligatoria o se solicita una operación no admitida, **el sistema deberá** explicar el problema y orientar al usuario sobre el uso válido, sin modificar los datos.
 - **Cuando** termine una operación, **el sistema deberá** permitir distinguir entre éxito y error mediante su estado de salida.
+- **Cuando** se produzca un resultado exitoso, una consulta de ayuda, un listado vacío o un marcado repetido, **el sistema deberá** terminar con código 0 y presentar el resultado en la salida normal.
+- **Si** se produce un error de nombre, de existencia o duplicidad de hábito, de validez de datos o de acceso a ellos, **el sistema deberá** terminar con código 1 y explicar el error en la salida de errores.
+- **Si** la sintaxis contiene un comando ausente o desconocido, argumentos ausentes o adicionales u opciones no admitidas, **el sistema deberá** terminar con código 2, explicar que el comando o los argumentos no son válidos y mostrar el uso válido, sin acceder a los datos.
+- **Cuando** el usuario solicite ayuda, **el sistema deberá** explicar en español el uso, los argumentos y ejemplos, sin acceder a los datos.
+- **Si** concurren errores de distintas etapas, **el sistema deberá** comunicar el primero según este orden: sintaxis, validez del nombre, acceso y validez de datos, existencia o duplicidad del hábito y guardado.
+- **Cuando** se comunique un error gestionado, **el sistema deberá** utilizar un mensaje en español iniciado con «Error:», sin trazas; los errores de acceso identificarán la ubicación afectada y orientarán sobre su revisión.
 
 ## Requisitos no funcionales
 
@@ -95,6 +115,17 @@ Una persona que registra sus propios hábitos de estudio y conoce el uso básico
 | Cumplimientos a ambos lados de medianoche | Cuentan como dos días si sus fechas son consecutivas. |
 | Cambio de mes, año o febrero bisiesto | Se mantiene la continuidad entre fechas consecutivas. |
 | Datos guardados dañados o inaccesibles | Error; los datos se conservan. |
+| Nombre legible de más de 80 caracteres | Se admite si cumple las demás reglas. |
+| Dos representaciones Unicode canónicamente equivalentes del mismo nombre | Se consideran el mismo hábito al crear y marcar. |
+| Nombre con tabulación o salto de línea en un extremo | Error; no se crea ni marca ningún hábito. |
+| Operación iniciada antes de medianoche y terminada después | Usa su fecha inicial; la siguiente operación usa la fecha nueva. |
+| Dos fechas consecutivas separadas por un día de 23 o 25 horas | Cuentan como dos días de calendario consecutivos. |
+| Con hoy como 2026-10-02, cumplimientos el 28, 29 de septiembre, 1 y 2 de octubre | Racha 2; el hueco del 30 de septiembre interrumpe la secuencia. |
+| Hoy cumplido, ayer omitido y una racha antigua larga | Racha 1. |
+| Marcar uno de varios hábitos | Los otros conservan sus cumplimientos y su orden. |
+| Almacenamiento ausente frente a existente vacío e inválido | El primero permite empezar vacío; el segundo produce error. |
+| Interrupción antes de sustituir los datos | Permanece la colección anterior o su ausencia inicial. |
+| Interrupción después de sustituir los datos, antes de confirmar | Permanece la nueva colección completa, aunque no se haya recibido confirmación. |
 
 ## Fuera de alcance
 
@@ -106,6 +137,7 @@ Una persona que registra sus propios hábitos de estudio y conoce el uso básico
 - Recordatorios, cuentas, colaboración, sincronización, importación y exportación.
 - Recuperación automática de datos dañados.
 - Tratamiento especial de cambios manuales del reloj o desplazamientos entre zonas horarias.
+- Garantías de durabilidad absoluta frente a fallos físicos del dispositivo.
 
 ## Criterios de finalización
 
@@ -119,6 +151,6 @@ Una persona que registra sus propios hábitos de estudio y conoce el uso básico
 
 ## Dudas abiertas y supuestos
 
-No quedan dudas funcionales bloqueantes identificadas tras las seis respuestas. Toda nueva duda se registrará con la marca **[NECESITA ACLARACIÓN]**.
+No quedan dudas funcionales bloqueantes identificadas tras las respuestas y las precisiones aprobadas del plan técnico. Toda nueva duda se registrará con la marca **[NECESITA ACLARACIÓN]**.
 
-Valores propuestos para aspectos no consultados expresamente: listado en orden de creación, rechazo de nombres vacíos, conservación de la presentación del nombre y ausencia de creación automática al marcar un hábito inexistente. Se supone que la fecha y la zona horaria del equipo son correctas y que el uso es secuencial por una sola persona.
+Decisiones aprobadas: listado en orden de creación, rechazo de nombres vacíos, conservación de la presentación del nombre y ausencia de creación automática al marcar un hábito inexistente. Se supone que la fecha y la zona horaria del equipo son correctas y que el uso es secuencial por una sola persona.
