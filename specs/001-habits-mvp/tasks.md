@@ -1,7 +1,7 @@
 # Tareas — MVP de habits-cli
 
 **Destino:** `specs/001-habits-mvp/tasks.md`  
-**Estado:** T01 completada; T02–T34 pendientes.
+**Estado:** T01 y T02 completadas; T03–T34 pendientes.
 
 Desglose de la especificación y el plan aprobados. Las tareas están ordenadas por dependencia y tienen estimaciones de **15–30 minutos**, incluyendo su comprobación.
 
@@ -14,9 +14,10 @@ Desglose de la especificación y el plan aprobados. Las tareas están ordenadas 
   **Hecho cuando:** existen los módulos previstos y el directorio de pruebas; los módulos se importan sin acceder a archivos ni consultar el reloj, y el descubrimiento de pruebas funciona sin dependencias externas.
   **Validación T01 (2026-10-05):** tests escritos antes del paquete; ejecución inicial de `pytest -q`: `3 failed in 7.35s` por ausencia de `habits`. Tras crear la estructura, `pytest -q`: `3 passed in 2.67s` (código 0). `python -B -S -m unittest discover -s tests -v`: `Ran 3 tests in 2.183s`, `OK` (código 0), con paquetes externos deshabilitados. Python 3.12.14; `pytest` se utilizó únicamente como ejecutor en un entorno temporal externo al proyecto. Las pruebas de `tests/test_scaffolding.py` verifican los módulos previstos, las importaciones sin acceso a archivos de datos ni al reloj y la ausencia de dependencias externas. Cobertura: RF-1 a RF-8 como soporte transversal; todavía no se implementa su comportamiento funcional.
 
-- [ ] **T02 — Definir el modelo de hábito y los errores de dominio.**  
+- [x] **T02 — Definir el modelo de hábito y los errores de dominio.**  
   **Estimación:** 20 min · **RF:** RF-1, RF-2, RF-3, RF-5, RF-6 · **Depende de:** T01.  
   **Hecho cuando:** un hábito contiene nombre y fechas inmutables, las interfaces públicas tienen anotaciones de tipos y los errores distinguen nombre inválido, duplicado y hábito inexistente.
+  **Validación T02 (2026-10-05):** seis tests escritos antes del código: `pytest -q` detectó inicialmente 6 fallos por ausencia del modelo y los errores, mientras las 3 pruebas de T01 pasaban. Tras implementar `Habit` inmutable y los errores con motivos en inglés, `pytest -q`: `9 passed, 5 subtests passed in 2.42s` (código 0). Se desactivó únicamente la caché del ejecutor mediante `PYTEST_ADDOPTS=-p no:cacheprovider` por falta de permisos sobre la caché anterior. `python -m unittest discover -s tests -v`: `Ran 9 tests in 2.172s`, `OK` (código 0). `tests/test_core_model.py` comprueba conservación del nombre y las fechas, inmutabilidad, independencia de listas externas y distinción de errores. Las interfaces públicas tienen anotaciones de tipos. Cobertura de soporte: RF-1, RF-2, RF-3, RF-5 y RF-6; T03 y las operaciones de usuario siguen pendientes.
 
 - [ ] **T03 — Implementar la validación y presentación de nombres.**  
   **Estimación:** 25 min · **RF:** RF-1, RF-2 · **Depende de:** T02.  
