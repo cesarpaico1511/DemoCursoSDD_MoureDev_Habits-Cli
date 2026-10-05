@@ -1,7 +1,7 @@
 # Tareas — MVP de habits-cli
 
 **Destino:** `specs/001-habits-mvp/tasks.md`  
-**Estado:** T01 y T02 completadas; T03–T34 pendientes.
+**Estado:** T01–T03 completadas; T04–T34 pendientes.
 
 Desglose de la especificación y el plan aprobados. Las tareas están ordenadas por dependencia y tienen estimaciones de **15–30 minutos**, incluyendo su comprobación.
 
@@ -19,9 +19,10 @@ Desglose de la especificación y el plan aprobados. Las tareas están ordenadas 
   **Hecho cuando:** un hábito contiene nombre y fechas inmutables, las interfaces públicas tienen anotaciones de tipos y los errores distinguen nombre inválido, duplicado y hábito inexistente.
   **Validación T02 (2026-10-05):** seis tests escritos antes del código: `pytest -q` detectó inicialmente 6 fallos por ausencia del modelo y los errores, mientras las 3 pruebas de T01 pasaban. Tras implementar `Habit` inmutable y los errores con motivos en inglés, `pytest -q`: `9 passed, 5 subtests passed in 2.42s` (código 0). Se desactivó únicamente la caché del ejecutor mediante `PYTEST_ADDOPTS=-p no:cacheprovider` por falta de permisos sobre la caché anterior. `python -m unittest discover -s tests -v`: `Ran 9 tests in 2.172s`, `OK` (código 0). `tests/test_core_model.py` comprueba conservación del nombre y las fechas, inmutabilidad, independencia de listas externas y distinción de errores. Las interfaces públicas tienen anotaciones de tipos. Cobertura de soporte: RF-1, RF-2, RF-3, RF-5 y RF-6; T03 y las operaciones de usuario siguen pendientes.
 
-- [ ] **T03 — Implementar la validación y presentación de nombres.**  
+- [x] **T03 — Implementar la validación y presentación de nombres.**  
   **Estimación:** 25 min · **RF:** RF-1, RF-2 · **Depende de:** T02.  
   **Hecho cuando:** pasan pruebas de recorte de extremos, normalización NFC, conservación de mayúsculas, nombres mayores de 80 caracteres y rechazo de vacíos, controles, tabulaciones y saltos de línea incluso en los extremos.
+  **Validación T03 (2026-10-05):** nueve tests añadidos antes del código en `tests/test_core_names.py`; la ejecución inicial de `pytest -q --tb=line` terminó con código 1 por ausencia de `normalize_name`. Tras implementar la función pura con anotaciones de tipos, `pytest -q`: `18 passed, 67 subtests passed in 2.49s` (código 0; `PYTEST_ADDOPTS=-p no:cacheprovider`). `python -m unittest discover -s tests -v`: `Ran 18 tests in 2.139s`, `OK` (código 0). Se verifican recorte de espacios, NFC, conservación de mayúsculas, tildes, espacios interiores y caracteres de compatibilidad; nombres de 81, 256 y 4096 caracteres; rechazo de vacíos, controles, saltos de línea y otros caracteres no imprimibles, incluidos los extremos. Cobertura: RF-1 y RF-2 en validación y presentación de nombres; comparación y búsqueda siguen pendientes en T04.
 
 - [ ] **T04 — Implementar la comparación y búsqueda de nombres.**  
   **Estimación:** 20 min · **RF:** RF-2 · **Depende de:** T03.  

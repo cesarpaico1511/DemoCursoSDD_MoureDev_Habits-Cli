@@ -4,6 +4,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from datetime import date
 from typing import ClassVar
+import unicodedata
 
 
 @dataclass(frozen=True)
@@ -44,3 +45,19 @@ class HabitNotFoundError(DomainError):
     """Indicate that no habit matches the requested name."""
 
     reason: ClassVar[str] = "habit_not_found"
+
+
+def normalize_name(name: str) -> str:
+    """Return the NFC display name, or raise InvalidNameError for invalid input."""
+    # Reject controls and line separators before stripping can hide them.
+    if any(
+        unicodedata.category(character) in {"Cc", "Zl", "Zp"}
+        for character in name
+    ):
+        raise InvalidNameError()
+
+    normalized_name = unicodedata.normalize("NFC", name.strip())
+    if not normalized_name or not normalized_name.isprintable():
+        raise InvalidNameError()
+
+    return normalized_name
