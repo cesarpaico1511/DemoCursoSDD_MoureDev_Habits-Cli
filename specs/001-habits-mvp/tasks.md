@@ -1,7 +1,7 @@
 # Tareas — MVP de habits-cli
 
 **Destino:** `specs/001-habits-mvp/tasks.md`  
-**Estado:** aprobado; ninguna tarea de implementación ejecutada.
+**Estado:** T01 completada; T02–T34 pendientes.
 
 Desglose de la especificación y el plan aprobados. Las tareas están ordenadas por dependencia y tienen estimaciones de **15–30 minutos**, incluyendo su comprobación.
 
@@ -9,9 +9,10 @@ Desglose de la especificación y el plan aprobados. Las tareas están ordenadas 
 
 ## 1. Estructura y lógica de dominio
 
-- [ ] **T01 — Preparar el paquete y la estructura de pruebas.**  
+- [x] **T01 — Preparar el paquete y la estructura de pruebas.**  
   **Estimación:** 20 min · **RF:** RF-1 a RF-8, soporte transversal · **Depende de:** ninguna.  
   **Hecho cuando:** existen los módulos previstos y el directorio de pruebas; los módulos se importan sin acceder a archivos ni consultar el reloj, y el descubrimiento de pruebas funciona sin dependencias externas.
+  **Validación T01 (2026-10-05):** tests escritos antes del paquete; ejecución inicial de `pytest -q`: `3 failed in 7.35s` por ausencia de `habits`. Tras crear la estructura, `pytest -q`: `3 passed in 2.67s` (código 0). `python -B -S -m unittest discover -s tests -v`: `Ran 3 tests in 2.183s`, `OK` (código 0), con paquetes externos deshabilitados. Python 3.12.14; `pytest` se utilizó únicamente como ejecutor en un entorno temporal externo al proyecto. Las pruebas de `tests/test_scaffolding.py` verifican los módulos previstos, las importaciones sin acceso a archivos de datos ni al reloj y la ausencia de dependencias externas. Cobertura: RF-1 a RF-8 como soporte transversal; todavía no se implementa su comportamiento funcional.
 
 - [ ] **T02 — Definir el modelo de hábito y los errores de dominio.**  
   **Estimación:** 20 min · **RF:** RF-1, RF-2, RF-3, RF-5, RF-6 · **Depende de:** T01.  
