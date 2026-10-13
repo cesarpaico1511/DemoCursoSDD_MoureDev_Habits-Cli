@@ -1,6 +1,6 @@
 """Pure habit and streak logic, independent of I/O and the clock."""
 
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from datetime import date
 from typing import ClassVar
@@ -61,3 +61,17 @@ def normalize_name(name: str) -> str:
         raise InvalidNameError()
 
     return normalized_name
+
+
+def name_key(name: str) -> str:
+    """Validate a name and return its canonical, case-insensitive comparison key."""
+    return unicodedata.normalize("NFC", normalize_name(name).casefold())
+
+
+def find_habit(habits: Sequence[Habit], name: str) -> Habit | None:
+    """Return the habit matching a valid name, or None when it is absent."""
+    key = name_key(name)
+    for habit in habits:
+        if name_key(habit.name) == key:
+            return habit
+    return None

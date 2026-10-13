@@ -1,7 +1,7 @@
 # Tareas — MVP de habits-cli
 
 **Destino:** `specs/001-habits-mvp/tasks.md`  
-**Estado:** T01–T03 completadas; T04–T34 pendientes.
+**Estado:** T01–T04 completadas; T05–T34 pendientes.
 
 Desglose de la especificación y el plan aprobados. Las tareas están ordenadas por dependencia y tienen estimaciones de **15–30 minutos**, incluyendo su comprobación.
 
@@ -24,9 +24,10 @@ Desglose de la especificación y el plan aprobados. Las tareas están ordenadas 
   **Hecho cuando:** pasan pruebas de recorte de extremos, normalización NFC, conservación de mayúsculas, nombres mayores de 80 caracteres y rechazo de vacíos, controles, tabulaciones y saltos de línea incluso en los extremos.
   **Validación T03 (2026-10-05):** nueve tests añadidos antes del código en `tests/test_core_names.py`; la ejecución inicial de `pytest -q --tb=line` terminó con código 1 por ausencia de `normalize_name`. Tras implementar la función pura con anotaciones de tipos, `pytest -q`: `18 passed, 67 subtests passed in 2.49s` (código 0; `PYTEST_ADDOPTS=-p no:cacheprovider`). `python -m unittest discover -s tests -v`: `Ran 18 tests in 2.139s`, `OK` (código 0). Se verifican recorte de espacios, NFC, conservación de mayúsculas, tildes, espacios interiores y caracteres de compatibilidad; nombres de 81, 256 y 4096 caracteres; rechazo de vacíos, controles, saltos de línea y otros caracteres no imprimibles, incluidos los extremos. Cobertura: RF-1 y RF-2 en validación y presentación de nombres; comparación y búsqueda siguen pendientes en T04.
 
-- [ ] **T04 — Implementar la comparación y búsqueda de nombres.**  
+- [x] **T04 — Implementar la comparación y búsqueda de nombres.**  
   **Estimación:** 20 min · **RF:** RF-2 · **Depende de:** T03.  
   **Hecho cuando:** las pruebas consideran equivalentes mayúsculas y representaciones Unicode canónicas, pero distinguen tildes y espacios interiores; creación y búsqueda utilizan la misma clave de comparación.
+  **Validación T04 (2026-10-13):** diez tests escritos antes del código en `tests/test_core_lookup.py`; la ejecución inicial de `pytest -q --tb=no` terminó con código 1 al faltar `name_key` y `find_habit`. Tras implementar ambas funciones puras y con anotaciones de tipos, `pytest -q`: `28 passed, 90 subtests passed in 2.60s` (código 0; `PYTEST_ADDOPTS=-p no:cacheprovider`). `python -m unittest discover -s tests -v`: `Ran 28 tests in 3.825s`, `OK` (código 0). Las pruebas verifican equivalencia de mayúsculas y Unicode, NFC después de `casefold`, distinción de tildes y espacios interiores, rechazo de consultas inválidas y búsqueda sin modificar hábitos; una búsqueda válida sin coincidencia devuelve `None`. Cobertura: RF-2 en comparación y búsqueda. `name_key` centraliza la comparación usada por la búsqueda; su integración con la creación se comprobará en T05.
 
 - [ ] **T05 — Implementar la creación de hábitos como operación pura.**  
   **Estimación:** 25 min · **RF:** RF-1, RF-2, RF-6 · **Depende de:** T04.  
