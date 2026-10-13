@@ -1,7 +1,7 @@
 # Tareas — MVP de habits-cli
 
 **Destino:** `specs/001-habits-mvp/tasks.md`  
-**Estado:** T01–T04 completadas; T05–T34 pendientes.
+**Estado:** T01–T05 completadas; T06–T34 pendientes.
 
 Desglose de la especificación y el plan aprobados. Las tareas están ordenadas por dependencia y tienen estimaciones de **15–30 minutos**, incluyendo su comprobación.
 
@@ -29,9 +29,10 @@ Desglose de la especificación y el plan aprobados. Las tareas están ordenadas 
   **Hecho cuando:** las pruebas consideran equivalentes mayúsculas y representaciones Unicode canónicas, pero distinguen tildes y espacios interiores; creación y búsqueda utilizan la misma clave de comparación.
   **Validación T04 (2026-10-13):** diez tests escritos antes del código en `tests/test_core_lookup.py`; la ejecución inicial de `pytest -q --tb=no` terminó con código 1 al faltar `name_key` y `find_habit`. Tras implementar ambas funciones puras y con anotaciones de tipos, `pytest -q`: `28 passed, 90 subtests passed in 2.60s` (código 0; `PYTEST_ADDOPTS=-p no:cacheprovider`). `python -m unittest discover -s tests -v`: `Ran 28 tests in 3.825s`, `OK` (código 0). Las pruebas verifican equivalencia de mayúsculas y Unicode, NFC después de `casefold`, distinción de tildes y espacios interiores, rechazo de consultas inválidas y búsqueda sin modificar hábitos; una búsqueda válida sin coincidencia devuelve `None`. Cobertura: RF-2 en comparación y búsqueda. `name_key` centraliza la comparación usada por la búsqueda; su integración con la creación se comprobará en T05.
 
-- [ ] **T05 — Implementar la creación de hábitos como operación pura.**  
+- [x] **T05 — Implementar la creación de hábitos como operación pura.**  
   **Estimación:** 25 min · **RF:** RF-1, RF-2, RF-6 · **Depende de:** T04.  
   **Hecho cuando:** crear devuelve una colección nueva con el hábito al final y sin cumplimientos; un duplicado produce el error previsto y la colección original permanece intacta.
+  **Validación T05 (2026-10-13):** nueve tests escritos antes del código en `tests/test_core_creation.py`; la ejecución inicial de `pytest -q --tb=line` terminó con código 1 por ausencia de `create_habit`. Tras implementar la operación pura con anotaciones de tipos, `pytest -q`: `37 passed, 108 subtests passed in 2.60s` (código 0; `PYTEST_ADDOPTS=-p no:cacheprovider`). `python -m unittest discover -s tests -v`: `Ran 37 tests in 2.302s`, `OK` (código 0). Las pruebas comprueban creación inicial y posterior, nombre normalizado, ausencia de cumplimientos, incorporación al final, independencia de colecciones, conservación de hábitos existentes y rechazo de nombres inválidos o duplicados sin mutaciones. También verifican nombres largos y diferencias de tildes y espacios interiores. La creación reutiliza `find_habit` y su clave `name_key`, quedando comprobada la integración prevista en T04. Cobertura: RF-1, RF-2 y RF-6 en el dominio; la CLI, el guardado y los resúmenes se implementarán en sus tareas.
 
 - [ ] **T06 — Implementar el marcado diario como operación pura.**  
   **Estimación:** 25 min · **RF:** RF-2, RF-3, RF-4 · **Depende de:** T05.  

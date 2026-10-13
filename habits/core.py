@@ -75,3 +75,12 @@ def find_habit(habits: Sequence[Habit], name: str) -> Habit | None:
         if name_key(habit.name) == key:
             return habit
     return None
+
+
+def create_habit(habits: Sequence[Habit], name: str) -> list[Habit]:
+    """Return a new collection with a unique habit and no completion dates."""
+    normalized_name = normalize_name(name)
+    if find_habit(habits, normalized_name) is not None:
+        raise DuplicateHabitError()
+
+    return [*habits, Habit(normalized_name)]
